@@ -35,6 +35,12 @@ Thumbs.db
 # 🐍 BACKEND (FastAPI / Django / Flask)
 # =====================================
 
+backend/venv/
+backend/Lib/
+backend/Scripts/
+backend/Include/
+backend/.env
+
 # Python bytecode
 __pycache__/
 *.py[cod]
