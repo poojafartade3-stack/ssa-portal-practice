@@ -22,3 +22,33 @@ def create_subject(data: SubjectCreate, db: Session = Depends(get_db)):
 @router.get("/", response_model=list[SubjectResponse])
 def get_all_subjects(db: Session = Depends(get_db)):
     return db.query(Subject).all()
+
+@router.put("/{id}", response_model=SubjectResponse)
+def update_subject(id: int, data: SubjectCreate, db: Session = Depends(get_db)):
+    subject = db.query(Subject).filter(Subject.id == id).first()
+    if not subject:
+        raise HTTPException(status_code=404, detail="Subject not found")
+
+    # Check duplicate name
+    duplicate = db.query(Subject).filter(
+        Subject.subject_name == data.subject_name,
+        Subject.id != id
+    ).first()
+    if duplicate:
+        raise HTTPException(status_code=400, detail="Subject already exists")
+
+    subject.subject_name = data.subject_name
+    db.commit()
+    db.refresh(subject)
+    return subject
+
+
+@router.delete("/{id}")
+def delete_subject(id: int, db: Session = Depends(get_db)):
+    subject = db.query(Subject).filter(Subject.id == id).first()
+    if not subject:
+        raise HTTPException(status_code=404, detail="Subject not found")
+
+    db.delete(subject)
+    db.commit()
+    return {"message": "Subject deleted successfully"}

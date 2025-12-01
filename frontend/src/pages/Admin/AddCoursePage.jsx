@@ -90,68 +90,76 @@ export default function AddCoursePage() {
         </div>
       </form>
 
-      {/* List of Courses */}
-      <div className="bg-white p-4 rounded shadow">
+      {/* Courses Table */}
+      <div className="bg-white p-4 rounded shadow overflow-x-auto">
         <h3 className="font-semibold mb-3">Existing Courses</h3>
 
         {courses.length === 0 ? (
           <p className="text-gray-600">No courses added yet.</p>
         ) : (
-          <ul className="space-y-2">
-            {courses.map((c) => (
-              <li
-                key={c.id}
-                className="flex justify-between items-center border p-2 rounded"
-              >
-                {editId === c.id ? (
-                  <input
-                    className="border p-1 rounded"
-                    value={editName}
-                    onChange={(e) => setEditName(e.target.value)}
-                  />
-                ) : (
-                  <span>{c.course_name}</span>
-                )}
+          <table className="w-full border">
+            <thead className="bg-gray-100 text-left">
+              <tr>
+                <th className="border p-2 w-3/4">Course Name</th>
+                <th className="border p-2 text-center">Actions</th>
+              </tr>
+            </thead>
 
-                <div className="flex gap-2">
-                  {editId === c.id ? (
-                    <>
-                      <button
-                        className="bg-green-600 text-white px-2 rounded"
-                        onClick={() => handleUpdate(c.id)}
-                      >
-                        Save
-                      </button>
-                      <button
-                        className="bg-gray-500 text-white px-2 rounded"
-                        onClick={() => setEditId(null)}
-                      >
-                        Cancel
-                      </button>
-                    </>
-                  ) : (
-                    <>
-                      <button
-                        className="bg-yellow-500 text-white px-2 rounded"
-                        onClick={() => {
-                          setEditId(c.id);
-                          setEditName(c.course_name);
-                        }}
-                      >
-                        Edit
-                      </button>
-                      <button
-                        className="bg-red-600 text-white px-2 rounded"
-                        onClick={() => handleDelete(c.id)}
-                      >
-                        Delete
-                      </button>
-                    </>
-                  )}
-                </div>
-              </li>
-            ))}
-          </ul>
+            <tbody>
+              {courses.map((c) => (
+                <tr key={c.id} className="border hover:bg-gray-50">
+                  <td className="border p-2">
+                    {editId === c.id ? (
+                      <input
+                        className="border p-1 rounded w-full"
+                        value={editName}
+                        onChange={(e) => setEditName(e.target.value)}
+                      />
+                    ) : (
+                      <span>{c.course_name}</span>
+                    )}
+                  </td>
+
+                  <td className="border p-2 text-center">
+                    {editId === c.id ? (
+                      <div className="flex justify-center gap-2">
+                        <button
+                          className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700"
+                          onClick={() => handleUpdate(c.id)}
+                        >
+                          Save
+                        </button>
+                        <button
+                          className="bg-gray-500 text-white px-3 py-1 rounded hover:bg-gray-600"
+                          onClick={() => setEditId(null)}
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="flex justify-center gap-2">
+                        <button
+                          className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600"
+                          onClick={() => {
+                            setEditId(c.id);
+                            setEditName(c.course_name);
+                          }}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
+                          onClick={() => handleDelete(c.id)}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         )}
       </div>
     </div>

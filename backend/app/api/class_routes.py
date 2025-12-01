@@ -22,3 +22,31 @@ def create_class(data: ClassCreate, db: Session = Depends(get_db)):
 @router.get("/", response_model=list[ClassResponse])
 def get_all_classes(db: Session = Depends(get_db)):
     return db.query(Class).all()
+
+@router.put("/{id}", response_model=ClassResponse)
+def update_class(id: int, data: ClassCreate, db: Session = Depends(get_db)):
+    existing = db.query(Class).filter(Class.id == id).first()
+    if not existing:
+        raise HTTPException(status_code=404, detail="Class not found")
+
+    # Check for duplicate class name
+    duplicate = db.query(Class).filter(
+        Class.class_name == data.class_name, Class.id != id
+    ).first()
+    if duplicate:
+        raise HTTPException(status_code=400, detail="Class name already exists")
+
+    existing.class_name = data.class_name
+    db.commit()
+    db.refresh(existing)
+    return existing
+
+@router.delete("/{id}")
+def delete_class(id: int, db: Session = Depends(get_db)):
+    existing = db.query(Class).filter(Class.id == id).first()
+    if not existing:
+        raise HTTPException(status_code=404, detail="Class not found")
+
+    db.delete(existing)
+    db.commit()
+    return {"message": "Class deleted successfully"}
